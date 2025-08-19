@@ -1,0 +1,22 @@
+## Configuração Netlify para app meiolink
+[build]
+  command = "npm install"
+  publish = "public"
+  functions = "netlify/functions"
+
+# Regras de redirect para API
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/:code"
+  to = "/.netlify/functions/api/:code"
+  status = 200
+
+# SPA fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
