@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>meiolink • Encurtador</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+  <h1>meiolink<span>.io</span></h1>
+    <button id="toggleTheme" aria-label="Alternar tema">🌓</button>
+  </header>
+  <main class="container">
+    <section class="card">
+      <h2>Encurtar URL</h2>
+      <form id="formShortener" autocomplete="off">
+        <div class="field">
+          <input id="inputUrl" type="url" required placeholder="https://exemplo.com/artigo" />
+        </div>
+        <div class="actions">
+          <button type="submit" class="primary">Encurtar</button>
+          <button type="reset" class="ghost" id="clearBtn">Limpar</button>
+        </div>
+      </form>
+      <div id="result" class="result" hidden>
+        <p>Link encurtado:</p>
+        <div class="short-box">
+          <a id="shortLink" target="_blank" rel="noopener"></a>
+          <button id="copyBtn" class="icon" title="Copiar">📋</button>
+        </div>
+        <div class="stats-inline" id="inlineStats" hidden>
+          <span title="Cliques" id="clickCount">0 cliques</span>
+        </div>
+      </div>
+      <p class="hint">Cole a URL completa (incluindo https://).</p>
+    </section>
+
+    <section class="card" id="listSection">
+      <div class="list-header">
+        <h2>Links Recentes</h2>
+        <button id="refreshBtn" class="icon" title="Atualizar">🔄</button>
+      </div>
+      <ul id="linksList" class="links"></ul>
+    </section>
+  </main>
+
+  <template id="itemTemplate">
+    <li class="item">
+      <div class="row">
+        <a class="short" target="_blank" rel="noopener"></a>
+        <span class="clicks" title="Cliques"></span>
+      </div>
+      <div class="orig"></div>
+      <time class="when"></time>
+    </li>
+  </template>
+
+  <footer class="footer">meiolink • Feito com ❤ – contador de cliques em tempo real</footer>
+  <script src="app.js" type="module"></script>
+</body>
+</html>

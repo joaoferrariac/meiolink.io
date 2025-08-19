@@ -1,0 +1,19 @@
+{
+  "name": "meiolink",
+  "version": "1.0.0",
+  "description": "meiolink - Encurtador de links com contagem de cliques",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "nanoid": "^5.0.7",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
