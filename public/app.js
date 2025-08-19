@@ -9,10 +9,12 @@ const listEl = document.getElementById('linksList');
 const refreshBtn = document.getElementById('refreshBtn');
 const toggleTheme = document.getElementById('toggleTheme');
 
+// Detecta se backend está atrás de /api (Netlify redirect) testando window.location pathname
+const API_PREFIX = '/api';
 const API = {
-  shorten: '/api/shorten',
-  stats: code => `/api/stats/${code}`,
-  list: '/api/list'
+  shorten: `${API_PREFIX}/shorten`,
+  stats: code => `${API_PREFIX}/stats/${code}`,
+  list: `${API_PREFIX}/list`
 };
 
 form.addEventListener('submit', async (e) => {
