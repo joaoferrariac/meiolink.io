@@ -3,6 +3,7 @@ import serverless from 'serverless-http';
 import { neon } from '@neondatabase/serverless';
 import { nanoid } from 'nanoid';
 import cors from 'cors';
+import 'dotenv/config';
 
 // Obtém URL de conexão Neon do env: NEON_DATABASE_URL
 const sql = neon(process.env.NEON_DATABASE_URL);
@@ -38,9 +39,8 @@ app.post('/api/shorten', async (req, res) => {
     if(!url) return res.status(400).json({ error: 'URL obrigatória' });
     const code = nanoid(6);
     await sql`INSERT INTO links (code, original_url) VALUES (${code}, ${url})`;
-    const host = req.headers['x-forwarded-host'] || req.headers.host;
-    const proto = (req.headers['x-forwarded-proto'] || 'https');
-    const shortUrl = `${proto}://${host}/${code}`;
+  const host = process.env.BASE_URL || `${req.headers['x-forwarded-proto']||'https'}://${req.headers['x-forwarded-host']||req.headers.host}`;
+  const shortUrl = `${host}/${code}`;
     res.json({ shortUrl, code });
   } catch (e){
     console.error(e);
