@@ -22,6 +22,15 @@ async function ensureTables(){
 const app = express();
 app.use(cors());
 app.use(express.json());
+// Normaliza prefixo /api em ambientes onde redirect mantém /api
+app.use((req, _res, next) => {
+  if (req.url.startsWith('/api/')) {
+    req.url = req.url.substring(4); // remove /api
+  } else if (req.url === '/api' || req.url === '/api/') {
+    req.url = '/';
+  }
+  next();
+});
 
 // Encapsula inicialização lazy
 let readyPromise = null;
@@ -32,7 +41,8 @@ function ready(){
   return readyPromise;
 }
 
-app.post('/api/shorten', async (req, res) => {
+// Aceita tanto /shorten quanto /api/shorten (via middleware acima)
+app.post(['/shorten','/api/shorten'], async (req, res) => {
   try {
     await ready();
     const { url } = req.body;
@@ -43,12 +53,12 @@ app.post('/api/shorten', async (req, res) => {
   const shortUrl = `${host}/${code}`;
     res.json({ shortUrl, code });
   } catch (e){
-    console.error(e);
-    res.status(500).json({ error: 'Erro ao encurtar' });
+  console.error('Erro /shorten', e);
+  res.status(500).json({ error: 'Erro ao encurtar', detail: e.message });
   }
 });
 
-app.get('/api/stats/:code', async (req, res) => {
+app.get(['/stats/:code','/api/stats/:code'], async (req, res) => {
   try {
     await ready();
     const { code } = req.params;
@@ -56,18 +66,20 @@ app.get('/api/stats/:code', async (req, res) => {
     if(rows.length === 0) return res.status(404).json({ error: 'Não encontrado' });
     res.json(rows[0]);
   } catch(e){
-    res.status(500).json({ error: 'Erro' });
+  console.error('Erro /stats', e);
+  res.status(500).json({ error: 'Erro', detail: e.message });
   }
 });
 
-app.get('/api/list', async (req, res) => {
+app.get(['/list','/api/list'], async (req, res) => {
   try {
     await ready();
     const limit = parseInt(req.query.limit) || 50;
     const rows = await sql`SELECT code, original_url as "originalUrl", clicks, created_at as "createdAt" FROM links ORDER BY created_at DESC LIMIT ${limit}`;
     res.json(rows);
   } catch(e){
-    res.status(500).json({ error: 'Erro' });
+  console.error('Erro /list', e);
+  res.status(500).json({ error: 'Erro', detail: e.message });
   }
 });
 
