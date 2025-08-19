@@ -25,8 +25,9 @@ form.addEventListener('submit', async (e) => {
   btn.disabled = true; btn.textContent = 'Gerando...';
   try {
     const r = await fetch(API.shorten, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ url }) });
-    const j = await r.json();
-    if(!r.ok) throw new Error(j.error||'Erro');
+  let j;
+  try { j = await r.json(); } catch { j = {}; }
+  if(!r.ok) throw new Error(j.detail || j.error || ('Erro ('+r.status+')'));
     showResult(j.shortUrl, j.code);
     input.value='';
   } catch(err){
@@ -54,6 +55,7 @@ function showError(msg){
   shortLink.removeAttribute('href');
   shortLink.textContent = msg;
   inlineStats.hidden = true;
+  console.error('Erro frontend:', msg);
 }
 
 copyBtn.addEventListener('click', async () => {
